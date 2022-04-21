@@ -62,7 +62,6 @@ public class Emily extends LabyModAddon {
             saveConfig();
         });
         subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
-        System.out.println("FillSettings: " + this.blacklistedPlayers);
         subSettings.add(playersToRender);
         subSettings.add(keyElement);
     }
