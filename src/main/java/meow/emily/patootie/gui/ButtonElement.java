@@ -1,7 +1,6 @@
 package meow.emily.patootie.gui;
 
 import net.labymod.core.LabyModCore;
-import net.labymod.settings.SettingsCategory;
 import net.labymod.settings.elements.CategorySettingsElement;
 import net.labymod.settings.elements.SettingsElement;
 
@@ -12,12 +11,9 @@ public class ButtonElement extends CategorySettingsElement {
     private int y;
 
     public ButtonElement(String title, Runnable callback) {
-        super(new CategoryElement(title), new ClickedCallback() {
-            @Override
-            public void clicked(SettingsCategory sc) {
-                LabyModCore.getMinecraft().playSound(SettingsElement.BUTTON_PRESS_SOUND, 1.0F);
-                callback.run();
-            }
+        super(new CategoryElement(title), sc -> {
+            LabyModCore.getMinecraft().playSound(SettingsElement.BUTTON_PRESS_SOUND, 1.0F);
+            callback.run();
         });
     }
 

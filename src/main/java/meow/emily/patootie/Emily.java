@@ -7,7 +7,6 @@ import meow.emily.patootie.events.PlayerEventHandler;
 import meow.emily.patootie.util.TickScheduler;
 import net.labymod.api.LabyModAddon;
 import net.labymod.settings.elements.*;
-import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 
@@ -53,22 +52,16 @@ public class Emily extends LabyModAddon {
     @Override
     protected void fillSettings(List<SettingsElement> subSettings) {
         subSettings.add(new HeaderElement(ModColor.cl('a') + "PlayerHider Settings"));
-        final KeyElement keyElement = new KeyElement("Key", new ControlElement.IconData(Material.REDSTONE_TORCH_ON), this.key, new Consumer<Integer>() {
-            @Override
-            public void accept(Integer integer) {
-                Emily.this.key = integer;
-                Emily.this.getConfig().addProperty("key", integer);
-                Emily.this.saveConfig();
-            }
+        final KeyElement keyElement = new KeyElement("Key", new ControlElement.IconData(Material.REDSTONE_TORCH_ON), this.key, integer -> {
+            Emily.this.key = integer;
+            Emily.this.getConfig().addProperty("key", integer);
+            saveConfig();
         });
-        final StringElement playersToRender = new StringElement("Players to render", new ControlElement.IconData(Material.LEVER), this.playersToRender, new Consumer<String>() {
-            @Override
-            public void accept(String s) {
-                Emily.this.playersToRender = s;
-                System.out.println("Players to render: " + s);
-                Emily.this.getConfig().addProperty("playersToRender", s);
-                Emily.this.saveConfig();
-            }
+        final StringElement playersToRender = new StringElement("Players to render", new ControlElement.IconData(Material.LEVER), this.playersToRender, s -> {
+            Emily.this.playersToRender = s;
+            System.out.println("Players to render: " + s);
+            Emily.this.getConfig().addProperty("playersToRender", s);
+            saveConfig();
         });
         System.out.println("FillSettings: " + this.blacklistedPlayers);
         subSettings.add(playersToRender);
