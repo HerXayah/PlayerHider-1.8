@@ -50,14 +50,14 @@ public class Emily extends LabyModAddon {
     @Override
     protected void fillSettings(List<SettingsElement> subSettings) {
         subSettings.add(new HeaderElement(ModColor.cl('a') + "PlayerHider Settings"));
+        subSettings.add(new BooleanElement("Enable PlayerHider", this, new ControlElement.IconData(Material.REDSTONE), "renderPlayers", this.renderPlayers));
         final KeyElement keyElement = new KeyElement("Key", new ControlElement.IconData(Material.REDSTONE_TORCH_ON), this.key, integer -> {
             Emily.this.key = integer;
             Emily.this.getConfig().addProperty("key", integer);
             saveConfig();
         });
-        final StringElement playersToRender = new StringElement("Players to render", new ControlElement.IconData(Material.LEVER), this.playersToRender, s -> {
+        final StringElement playersToRender = new StringElement("Blacklist", new ControlElement.IconData(Material.COAL_BLOCK), this.playersToRender, s -> {
             Emily.this.playersToRender = s;
-            System.out.println("Players to render: " + s);
             Emily.this.getConfig().addProperty("playersToRender", s);
             saveConfig();
         });
