@@ -1,7 +1,5 @@
 package meow.emily.patootie;
 
-//import meow.emily.patootie.events.PlayerEventHandler;
-
 import com.google.gson.JsonObject;
 import meow.emily.patootie.events.PlayerEventHandler;
 import meow.emily.patootie.util.TickScheduler;
@@ -63,6 +61,7 @@ public class Emily extends LabyModAddon {
             Emily.this.getConfig().addProperty("playersToRender", s);
             saveConfig();
         });
+        subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
         System.out.println("FillSettings: " + this.blacklistedPlayers);
         subSettings.add(playersToRender);
         subSettings.add(keyElement);
