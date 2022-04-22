@@ -1,6 +1,5 @@
 package meow.emily.patootie.events;
 
-import com.google.gson.JsonObject;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import meow.emily.patootie.Emily;
 import meow.emily.patootie.util.Utils;
@@ -13,8 +12,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.UUID;
 
 public class PlayerEventHandler {
 
@@ -31,7 +28,7 @@ public class PlayerEventHandler {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
 
-                            try {
+                         /*    try {
                                 for (int i = 0; i < localPlayersToRender.length; i++) {
                                     Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID());
                                     JsonObject object = new JsonObject();
@@ -47,7 +44,7 @@ public class PlayerEventHandler {
                                 throw new RuntimeException(ex);
                             }
 
-                      /*  try {
+                       try {
                             Field classVoice = Emily.getInstance().getVoiceChat().getClass().getDeclaredField("playerVolumes");
                             classVoice.setAccessible(true);
                             Method voiceMethod = Emily.getInstance().getVoiceChat().getClass().getDeclaredMethod("getPlayerVolumes");
