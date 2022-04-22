@@ -22,6 +22,20 @@ public class PlayerEventHandler {
                 for (String s : localPlayersToRender) {
                     if (s.equals(enPlayer.getGameProfile().getName())) {
                         e.setCanceled(true);
+                      /*  try {
+                                // Just testing smth Emily.getInstance().getVoiceChat().getEnabledSetting().getCurrentValue();
+                                Emily.getInstance().getVoiceChat().getPlayerVolumes().put(UUID.fromString(enPlayer.getGameProfile().getName()), 0);
+                                LabyMod.getInstance().displayMessageInChat("Hidden");
+                        } catch (Exception ex) {
+                          //  System.out.println("Error: " + ex);
+                        }
+                        try {
+                            Emily.getInstance().getVoiceChat().getPlayerVolumes().get(UUID.fromString(enPlayer.getGameProfile().getName()));
+                        } catch (Exception ex) {
+                           // System.out.println("Error2: " + ex);
+                        }
+                        // Why did no one implement a god damn method to mute Players via the client??????
+                        // this shit here doesnt work afaik */
                     }
                 }
             }
