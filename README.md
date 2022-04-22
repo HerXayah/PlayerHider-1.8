@@ -2,7 +2,7 @@
 
 This addon allows you to talk in the LabyMod VoiceChat continuously!
 
-[![Build Addon](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml/badge.svg)](https://github.com/l3nnartt/Permavoice-1.8/actions/workflows/release.yml)
+[![Build Addon](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml/badge.svg)](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml)
 
 ## Setup Workspace
 
