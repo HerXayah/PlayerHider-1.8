@@ -2,7 +2,6 @@ package meow.emily.patootie;
 
 import com.google.gson.JsonObject;
 import meow.emily.patootie.events.PlayerEventHandler;
-import meow.emily.patootie.util.TickScheduler;
 import net.labymod.api.LabyModAddon;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Material;
@@ -19,6 +18,8 @@ public class Emily extends LabyModAddon {
     private static Emily instance;
 
     private boolean renderPlayers = true;
+
+    private boolean ConfigMessage = true;
     private String playersToRender = "";
     private String blacklistedPlayers = "";
     private int key;
@@ -35,7 +36,6 @@ public class Emily extends LabyModAddon {
         LOGGER.log(java.util.logging.Level.INFO, PREFIX + "Enabled");
 
         api.registerForgeListener(new PlayerEventHandler());
-        api.registerForgeListener(new TickScheduler());
 
     }
 
@@ -45,6 +45,7 @@ public class Emily extends LabyModAddon {
         this.renderPlayers = config.has("renderPlayers") && config.get("renderPlayers").getAsBoolean();
         this.playersToRender = config.has("playersToRender") ? config.get("playersToRender").getAsString() : "";
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
+        this.ConfigMessage = config.has("ConfigMessage") && config.get("ConfigMessage").getAsBoolean();
     }
 
     @Override
@@ -56,6 +57,7 @@ public class Emily extends LabyModAddon {
             Emily.this.getConfig().addProperty("key", integer);
             saveConfig();
         });
+        subSettings.add(new BooleanElement("Enable Messages", this, new ControlElement.IconData(Material.WOOL), "ConfigMessage", this.ConfigMessage));
         final StringElement playersToRender = new StringElement("Blacklist", new ControlElement.IconData(Material.COAL_BLOCK), this.playersToRender, s -> {
             Emily.this.playersToRender = s;
             Emily.this.getConfig().addProperty("playersToRender", s);
@@ -96,6 +98,14 @@ public class Emily extends LabyModAddon {
 
     public void setRenderPlayers(boolean renderPlayers) {
         this.renderPlayers = renderPlayers;
+    }
+
+    public boolean isConfigMessage() {
+        return this.ConfigMessage;
+    }
+
+    public void setConfigMessage(boolean ConfigMessage) {
+        this.ConfigMessage = ConfigMessage;
     }
 
 }

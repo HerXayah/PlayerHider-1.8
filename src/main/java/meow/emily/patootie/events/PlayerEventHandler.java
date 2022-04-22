@@ -22,6 +22,8 @@ public class PlayerEventHandler {
                 for (String s : localPlayersToRender) {
                     if (s.equals(enPlayer.getGameProfile().getName())) {
                         e.setCanceled(true);
+                        e.entityPlayer.isInvisible();
+                        e.entityPlayer.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
                     }
                 }
             }
@@ -34,10 +36,14 @@ public class PlayerEventHandler {
             if (Keyboard.isKeyDown(Emily.getInstance().getKey())) {
                 if (Emily.getInstance().isRenderPlayers()) {
                     Emily.getInstance().setRenderPlayers(false);
-                    Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + " Blacklisted Players are now " + ChatFormatting.BOLD + ChatFormatting.GREEN + "on"));
+                    if (Emily.getInstance().isConfigMessage()) {
+                        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.GREEN + " on"));
+                    }
                 } else {
                     Emily.getInstance().setRenderPlayers(true);
-                    Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + " Blacklisted Players are now " + ChatFormatting.BOLD + ChatFormatting.DARK_RED + "off"));
+                    if (Emily.getInstance().isConfigMessage()) {
+                        Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText("[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.DARK_RED + " off"));
+                    }
                 }
             }
         }
