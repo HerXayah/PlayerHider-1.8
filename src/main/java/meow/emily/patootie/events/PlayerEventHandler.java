@@ -22,7 +22,6 @@ public class PlayerEventHandler {
                 for (String s : localPlayersToRender) {
                     if (s.equals(enPlayer.getGameProfile().getName())) {
                         e.setCanceled(true);
-                        enPlayer.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
                     }
                 }
             }
