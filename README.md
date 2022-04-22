@@ -1,4 +1,4 @@
-# PlayerHider-1.8
+# PlayerHider-1.12.2
 
 This addon allows you to talk in the LabyMod VoiceChat continuously!
 
@@ -10,6 +10,9 @@ This addon allows you to talk in the LabyMod VoiceChat continuously!
 - Mute Players in Voice when they are hidden
 I wasnt able to edit the "mutedPlayers" variable in the VoiceChat Config File.
 If anyone is able to do this, it would be so much appreciated as a commit!
+```
+
+```
 - Getting the mute func of labymod to work.
 - Make this work on non-Forge Builds of Labymod. Thanks Laby....
 ```
