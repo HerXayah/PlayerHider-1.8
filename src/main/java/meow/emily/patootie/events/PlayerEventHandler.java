@@ -1,5 +1,6 @@
 package meow.emily.patootie.events;
 
+import com.google.gson.JsonObject;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import meow.emily.patootie.Emily;
 import meow.emily.patootie.util.Utils;
@@ -12,19 +13,39 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        EntityPlayer enPlayer = e.getEntityPlayer();
-        if (Emily.getInstance().isRenderPlayers() && !enPlayer.equals(Minecraft.getMinecraft().player)) {
-            String[] localPlayersToRender = Emily.getInstance().getPlayersToRenderString().split(",");
-            if (!Utils.isNPC(enPlayer)) {
-                e.setCanceled(false);
-                for (String s : localPlayersToRender) {
-                    if (s.equals(enPlayer.getGameProfile().getName())) {
-                        e.setCanceled(true);
+
+        if (Emily.getInstance().isRenderPlayers()) {
+            EntityPlayer enPlayer = e.getEntityPlayer();
+            if (Emily.getInstance().isRenderPlayers() && !enPlayer.equals(Minecraft.getMinecraft().player)) {
+                String[] localPlayersToRender = Emily.getInstance().getPlayersToRenderString().split(",");
+                if (!Utils.isNPC(enPlayer)) {
+                    e.setCanceled(false);
+                    for (String s : localPlayersToRender) {
+                        if (s.equals(enPlayer.getGameProfile().getName())) {
+                            e.setCanceled(true);
+
+                            try {
+                                for (int i = 0; i < localPlayersToRender.length; i++) {
+                                    Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID());
+                                    JsonObject object = new JsonObject();
+
+                                    for (Map.Entry<UUID, Integer> ignored : Emily.getInstance().getVoiceChat().playerVolumes.entrySet()) {
+                                        object.addProperty(String.valueOf(Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID())), 0);
+                                    }
+
+                                    Emily.getInstance().getVoiceChat().getConfig().add("playerVolumes", object);
+                                    Emily.getInstance().getVoiceChat().saveConfig();
+                                }
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
 
                       /*  try {
                             Field classVoice = Emily.getInstance().getVoiceChat().getClass().getDeclaredField("playerVolumes");
@@ -63,6 +84,7 @@ public class PlayerEventHandler {
                         }
                         // Why did no one implement a god damn method to mute Players via the client??????
                         // this shit here doesnt work afaik */
+                        }
                     }
                 }
             }
