@@ -1,35 +1,48 @@
-# LabyChatReply for LabyMod 1.12.2 [v1.3] [![Gradle build](https://github.com/Antimoxs/LabyChatReply12/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/Antimoxs/LabyChatReply12/actions/workflows/release.yml)
+# PlayerHider-1.8
 
-by Antimoxs
+This addon allows you to talk in the LabyMod VoiceChat continuously!
 
-### Not the right MC version? Check out other versions: \[ [1.8](https://github.com/Antimoxs/LabyChatReply) ] \[ [1.16.5](https://github.com/Antimoxs/LabyChatReply16) ]
+[![Build Addon](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml/badge.svg)](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml)
 
-Reply to the LabyMod Chat ingame with LabyChatReply by Antimoxs. For more information join our
-discord: https://discord.gg/ATdbUS4
+## Help needed
 
-## Commands:
+```
+- Mute Players in Voice when they are hidden
+I wasnt able to edit the "mutedPlayers" variable in the VoiceChat Config File.
+If anyone is able to do this, it would be so much appreciated as a commit!
+- Getting the mute func of labymod to work.
+- Make this work on non-Forge Builds of Labymod. Thanks Laby....
+```
 
-> /lmc __user__ _message_<p>_Sends a LabyMod message to the selected user of your friendlist._</p>
-> /lmr _message_</b><p>_Sends a message to last user names in /lmc_</p>
+## Setup Workspace
 
-The syntax for both commands can now be changed in the addons settings.
+```
+gradlew setupDecompWorkspace 
+```
 
-### New in 1.3
+#### Setup for InteliJ
 
-You can now put UUIDs instead of names in the custom command input field to prevent the syntax from working when
-your friends change their name.
+```
+gradlew idea
+```
 
-> df66f7ab-d5eb-4d25-8d95-0d65bec4caee anti;LabyStudio laby boi;
+#### Setup for Eclipse
 
-(Ingame commands will stay the same)
+```
+gradlew eclipse
+```
 
-### New in 1.2
+#### Build Addon
 
-You are now able to make custom commands for friends within the ingame settings. You can see the syntax on this example:
+```
+gradlew build 
+```
 
-> Antimoxs anti;LabyStudio laby boi;
+#### Debug Addon
 
-Ingame commands matching the syntax:
-> /anti _message_<p>
-> /laby boi _message_
-  
+```
+-Dfml.coreMods.load=net.labymod.core.asm.LabyModCoreMod -DdebugMode=true -Daddonresources=addon.json
+```
+
+For more information you can check out the
+LabyMod [documentation](https://docs.labymod.net/pages/create-addons/introduction/).
