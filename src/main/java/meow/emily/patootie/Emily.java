@@ -2,6 +2,7 @@ package meow.emily.patootie;
 
 import com.google.gson.JsonObject;
 import meow.emily.patootie.events.PlayerEventHandler;
+import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
 import net.labymod.settings.elements.*;
 import net.labymod.utils.Material;
@@ -16,6 +17,8 @@ public class Emily extends LabyModAddon {
     private static final String PREFIX = "[PH] ";
 
     private static Emily instance;
+    private VoiceChat voiceChat;
+
 
     private boolean renderPlayers = true;
 
@@ -32,8 +35,6 @@ public class Emily extends LabyModAddon {
     public void onEnable() {
 
         instance = this;
-
-        LOGGER.log(java.util.logging.Level.INFO, PREFIX + "Enabled");
 
         api.registerForgeListener(new PlayerEventHandler());
 
@@ -106,6 +107,14 @@ public class Emily extends LabyModAddon {
 
     public void setConfigMessage(boolean ConfigMessage) {
         this.ConfigMessage = ConfigMessage;
+    }
+
+    public VoiceChat getVoiceChat() {
+        return this.voiceChat;
+    }
+
+    public void setVoiceChat(VoiceChat voiceChat) {
+        this.voiceChat = voiceChat;
     }
 
 }
