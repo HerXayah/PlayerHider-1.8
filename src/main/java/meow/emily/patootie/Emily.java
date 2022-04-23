@@ -77,7 +77,7 @@ public class Emily extends LabyModAddon {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         // getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                        labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
+                        // labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
@@ -107,7 +107,7 @@ public class Emily extends LabyModAddon {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         //  getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                        labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
+                        //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             RemovePlayer(networkPlayerInfo.getGameProfile().getName());
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 100);
@@ -207,7 +207,7 @@ public class Emily extends LabyModAddon {
             Integer volume = uuidIntegerEntry.getValue();
             object.addProperty(uuid, volume);
         }
-        labyMod().displayMessageInChat(playersToRender.toString());
+        //labyMod().displayMessageInChat(playersToRender.toString());
         getConfig().add("playersToRender", object);
         saveConfig();
     }
