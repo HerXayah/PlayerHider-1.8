@@ -8,8 +8,8 @@ This addon allows you to talk in the LabyMod VoiceChat continuously!
 
 ```
 - Mute Players in Voice when they are hidden
-I wasnt able to edit the "mutedPlayers" variable in the VoiceChat Config File.
-If anyone is able to do this, it would be so much appreciated as a commit!
+It just crashes whenever i try to set it 
+in PlayerEventHandler.java
 ```
 
 ## Setup Workspace
