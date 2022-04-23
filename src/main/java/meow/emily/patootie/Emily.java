@@ -64,6 +64,8 @@ public class Emily extends LabyModAddon {
                             getConfig();
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
+                            playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
+                            savePlayersToRenderString();
                             saveConfig();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -71,7 +73,6 @@ public class Emily extends LabyModAddon {
                         }
                         loadConfig();
                     }
-
                     @Override
                     public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         return true;
@@ -156,7 +157,6 @@ public class Emily extends LabyModAddon {
 
     public void savePlayersToRenderString() {
         JsonObject object = new JsonObject();
-
         for (String s : playersToRenderString) {
             object.addProperty(null, s);
         }
