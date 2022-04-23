@@ -77,10 +77,9 @@ public class Emily extends LabyModAddon {
                         getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
+                            UpdateButton(networkPlayerInfo.getGameProfile().getName());
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
-                            playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
-                            savePlayersToRenderString();
                             saveConfig();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -88,7 +87,6 @@ public class Emily extends LabyModAddon {
                         }
                         loadConfig();
                     }
-
                     @Override
                     public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         return true;
@@ -152,16 +150,25 @@ public class Emily extends LabyModAddon {
 
         // If you know how to make both, THIS and the STRING Value to update simultaniously
         // feel free to edit this in, so we can use This
-
-      /*  StringElement playersToRender = new StringElement(
+        /*
+        StringElement Blacklistbutton = new StringElement(
                 "Blacklist", new ControlElement.IconData(Material.COAL_BLOCK),
-                String.join(",", playersToRenderString), s -> {
-            playersToRenderString.add(s);
-            savePlayersToRenderString();
-            saveConfig();
-        }); */
+                String.join(",", playersToRenderString), this::UpdateButton);
         subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
+
+         */
         subSettings.add(keyElement);
+    }
+
+    public void UpdateButton(String s) {
+        // Take String as array
+        String[] players = s.split(",");
+        // Convert String Array to List
+        List<String> playersList = Arrays.asList(players);
+        playersToRenderString.clear();
+        playersToRenderString.addAll(playersList);
+        savePlayersToRenderString();
+        saveConfig();
     }
 
     public void savePlayersToRender() {
@@ -185,7 +192,6 @@ public class Emily extends LabyModAddon {
         for (String s : playersToRenderString) {
             jsonArray.add(s);
         }
-
         getConfig().add("playersToRenderString", jsonArray);
         saveConfig();
     }
