@@ -1,5 +1,6 @@
 package meow.emily.patootie;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import meow.emily.patootie.events.PlayerEventHandler;
@@ -28,7 +29,7 @@ public class Emily extends LabyModAddon {
 
     private boolean renderPlayers = true;
 
-    private boolean ConfigMessage = true;
+    private boolean configMessage = true;
 
     private List<String> playersToRenderString = new ArrayList<>();
 
@@ -42,50 +43,63 @@ public class Emily extends LabyModAddon {
 
     @Override
     public void onEnable() {
-
         instance = this;
+        api.registerForgeListener(new PlayerEventHandler());
+        api.getEventManager().register(
+                (user, entityPlayer, networkPlayerInfo, list) ->
+                        list.add(createBlacklistEntry()));
+    }
 
-        this.api.registerForgeListener(new PlayerEventHandler());
+    private UserActionEntry createBlacklistEntry() {
+        return new UserActionEntry(
+                "Blacklist Player",
+                UserActionEntry.EnumActionType.NONE,
+                null,
+                new UserActionEntry.ActionExecutor() {
+                    @Override
+                    public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
+                        getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
+                        labyMod().displayMessageInChat("UUID: " + getConfig().get("playersToRenderString"));
+                        try {
+                            getConfig();
+                            playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
+                            savePlayersToRender();
+                            saveConfig();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            labyMod().displayMessageInChat("Error: " + e.getMessage());
+                        }
+                        loadConfig();
+                    }
 
-        this.api.getEventManager().register((user, entityPlayer, networkPlayerInfo, list) -> list.add(new UserActionEntry("Blacklist Player", UserActionEntry.EnumActionType.NONE, null, new UserActionEntry.ActionExecutor() {
-
-            @Override
-            public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                Emily.this.getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                LabyMod.getInstance().displayMessageInChat("UUID: " + String.valueOf(Emily.getInstance().getConfig().get("playersToRenderString")));
-                try {
-                    Emily.getInstance().getConfig();
-                    Emily.getInstance().playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
-                    savePlayersToRender();
-                    saveConfig();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    LabyMod.getInstance().displayMessageInChat("Error: " + e.getMessage());
+                    @Override
+                    public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
+                        return true;
+                    }
                 }
-                Emily.getInstance().loadConfig();
-            }
-
-            @Override
-            public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                return true;
-            }
-        })));
-
+        );
     }
 
     @Override
     public void loadConfig() {
         JsonObject config = getConfig();
         this.renderPlayers = config.has("renderPlayers") && config.get("renderPlayers").getAsBoolean();
-        this.playersToRenderString = Collections.singletonList(config.has("playersToRenderString") ? config.get("playersToRenderString").getAsString() : "");
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
-        this.ConfigMessage = config.has("ConfigMessage") && config.get("ConfigMessage").getAsBoolean();
-        if (Emily.getInstance().getConfig().has("playersToRender")) {
-            JsonObject object = this.getConfig().get("playersToRender").getAsJsonObject();
+        this.configMessage = config.has("configMessage") && config.get("configMessage").getAsBoolean();
+        if (config.has("playersToRenderString")) {
+            JsonArray jsonArray = config.get("playersToRenderString").getAsJsonArray();
+            for (JsonElement jsonElement : jsonArray) {
+                String name = jsonElement.getAsString();
+                playersToRenderString.add(name);
+            }
+        }
+        if (config.has("playersToRender")) {
+            JsonObject object = config.get("playersToRender").getAsJsonObject();
             Map<UUID, Integer> playersToRender = new HashMap<>();
-
-            for (Map.Entry<String, JsonElement> stringJsonElementEntry : object.entrySet()) {
-                playersToRender.put(UUID.fromString((String) ((Map.Entry<?, ?>) stringJsonElementEntry).getKey()), ((JsonElement) ((Map.Entry<?, ?>) stringJsonElementEntry).getValue()).getAsInt());
+            for (Map.Entry<String, JsonElement> playerVolumeEntry : object.entrySet()) {
+                String id = playerVolumeEntry.getKey();
+                int volume = playerVolumeEntry.getValue().getAsInt();
+                playersToRender.put(UUID.fromString(id), volume);
             }
             this.playersToRender = playersToRender;
         } else {
@@ -96,16 +110,27 @@ public class Emily extends LabyModAddon {
     @Override
     protected void fillSettings(List<SettingsElement> subSettings) {
         subSettings.add(new HeaderElement(ModColor.cl('a') + "PlayerHider Settings"));
-        subSettings.add(new BooleanElement("Enable PlayerHider", this, new ControlElement.IconData(Material.REDSTONE), "renderPlayers", this.renderPlayers));
-        final KeyElement keyElement = new KeyElement("Key", new ControlElement.IconData(Material.REDSTONE_TORCH_ON), this.key, integer -> {
-            Emily.this.key = integer;
-            Emily.this.getConfig().addProperty("key", integer);
+        subSettings.add(new BooleanElement(
+                "Enable PlayerHider",
+                this, new ControlElement.IconData(Material.REDSTONE),
+                "renderPlayers", renderPlayers)
+        );
+        subSettings.add(new BooleanElement(
+                "Enable Messages",
+                this, new ControlElement.IconData(Material.WOOL),
+                "configMessage", configMessage)
+        );
+        KeyElement keyElement = new KeyElement(
+                "Key",
+                new ControlElement.IconData(Material.REDSTONE_TORCH_ON), this.key, integer -> {
+            this.key = integer;
+            getConfig().addProperty("key", integer);
             saveConfig();
         });
-        subSettings.add(new BooleanElement("Enable Messages", this, new ControlElement.IconData(Material.WOOL), "ConfigMessage", this.ConfigMessage));
-        final StringElement playersToRender = new StringElement("Blacklist", new ControlElement.IconData(Material.COAL_BLOCK), this.playersToRenderString, s -> {
-            Emily.this.playersToRenderString = Collections.singletonList(s);
-            Emily.this.getConfig().addProperty("playersToRenderString", s);
+        StringElement playersToRender = new StringElement(
+                "Blacklist", new ControlElement.IconData(Material.COAL_BLOCK),
+                String.join(",", playersToRenderString), s -> {
+            getConfig().addProperty("playersToRenderString", s);
             saveConfig();
         });
         subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
@@ -115,16 +140,18 @@ public class Emily extends LabyModAddon {
 
     public void savePlayersToRender() {
         JsonObject object = new JsonObject();
-
-        for (Map.Entry<UUID, Integer> uuidIntegerEntry : this.playersToRender.entrySet()) {
-            object.addProperty(((UUID) ((Map.Entry<?, ?>) uuidIntegerEntry).getKey()).toString(), (Number) ((Map.Entry<?, ?>) uuidIntegerEntry).getValue());
+        for (Map.Entry<UUID, Integer> uuidIntegerEntry : playersToRender.entrySet()) {
+            String uuid = uuidIntegerEntry.getKey().toString();
+            Integer volume = uuidIntegerEntry.getValue();
+            object.addProperty(uuid, volume);
         }
+        labyMod().displayMessageInChat(playersToRender.toString());
+        getConfig().add("playersToRender", object);
+        saveConfig();
+    }
 
-        LabyMod.getInstance().displayMessageInChat("Saved players to render");
-        LabyMod.getInstance().displayMessageInChat(Emily.getInstance().getPlayersToRender().toString());
-
-        this.getConfig().add("playersToRender", object);
-        this.saveConfig();
+    private LabyMod labyMod() {
+        return LabyMod.getInstance();
     }
 
     public void savePlayersToRenderString() {
@@ -134,8 +161,8 @@ public class Emily extends LabyModAddon {
             object.addProperty(null, s);
         }
 
-        this.getConfig().add("playersToRenderString", object);
-        this.saveConfig();
+        getConfig().add("playersToRenderString", object);
+        saveConfig();
     }
 
     public int getKey() {
@@ -171,11 +198,11 @@ public class Emily extends LabyModAddon {
     }
 
     public boolean isConfigMessage() {
-        return this.ConfigMessage;
+        return this.configMessage;
     }
 
     public void setConfigMessage(boolean ConfigMessage) {
-        this.ConfigMessage = ConfigMessage;
+        this.configMessage = ConfigMessage;
     }
 
     public VoiceChat getVoiceChat() {
