@@ -78,7 +78,7 @@ public class Emily extends LabyModAddon {
                 new UserActionEntry.ActionExecutor() {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                        getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
+                       // getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
@@ -90,7 +90,6 @@ public class Emily extends LabyModAddon {
                             e.printStackTrace();
                             labyMod().displayMessageInChat("Error: " + e.getMessage());
                         }
-                        loadConfig();
                     }
 
                     @Override
@@ -109,7 +108,7 @@ public class Emily extends LabyModAddon {
                 new UserActionEntry.ActionExecutor() {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                        getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
+                        //  getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             RemovePlayer(networkPlayerInfo.getGameProfile().getName());
@@ -120,7 +119,6 @@ public class Emily extends LabyModAddon {
                             e.printStackTrace();
                             labyMod().displayMessageInChat("Error: " + e.getMessage());
                         }
-                        loadConfig();
                     }
 
                     @Override
@@ -220,7 +218,8 @@ public class Emily extends LabyModAddon {
     public void savePlayersToRenderString() {
         JsonArray jsonArray = new JsonArray();
         for (String s : playersToRenderString) {
-            if (!s.equals(" ")) {
+            // check if already in array
+            if (!jsonArray.toString().contains(s)) {
                 jsonArray.add(s);
             }
         }
