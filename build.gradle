@@ -58,6 +58,12 @@ jar {
     }
 }
 
+jar {
+    // Excludes the start file
+    exclude("**/launch")
+    archiveName = "PlayerHider-1.8.jar"
+}
+
 reobf {
     jar {
         useNotchSrg()
