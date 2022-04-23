@@ -195,7 +195,11 @@ public class Emily extends LabyModAddon {
     }
 
     public void RemovePlayer(String s) {
-        playersToRenderString.removeIf(player -> player.equals(s));
+        // remove from the list
+
+        playersToRenderString.remove(s);
+        savePlayersToRenderString();
+        //  playersToRenderString.removeIf(player -> player.equals(s));
         saveConfig();
     }
 
