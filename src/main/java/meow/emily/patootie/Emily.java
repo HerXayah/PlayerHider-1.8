@@ -35,7 +35,7 @@ public class Emily extends LabyModAddon {
 
     private String playersToRenderString = "";
 
-    public HashMap playersToRender = new HashMap();
+    public Map<UUID, Integer> playersToRender = new HashMap<>();
 
     private int key;
 
@@ -54,8 +54,17 @@ public class Emily extends LabyModAddon {
 
             @Override
             public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                Emily.this.getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName() + ",");
-                LabyMod.getInstance().displayMessageInChat(String.valueOf(Emily.getInstance().getConfig().get("playersToRenderString")));
+                Emily.this.getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getId() + ",");
+                LabyMod.getInstance().displayMessageInChat("UUID: " + String.valueOf(Emily.getInstance().getConfig().get("playersToRenderString")));
+                try {
+                    Emily.getInstance().getConfig();
+                    Emily.getInstance().playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
+                    savePlayersToRender();
+                    saveConfig();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LabyMod.getInstance().displayMessageInChat("Error: " + e.getMessage());
+                }
                 Emily.getInstance().loadConfig();
             }
 
@@ -74,13 +83,16 @@ public class Emily extends LabyModAddon {
         this.playersToRenderString = config.has("playersToRenderString") ? config.get("playersToRenderString").getAsString() : "";
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
         this.ConfigMessage = config.has("ConfigMessage") && config.get("ConfigMessage").getAsBoolean();
-        if (this.getConfig().has("playersToRender")) {
+        if (Emily.getInstance().getConfig().has("playersToRender")) {
             JsonObject object = this.getConfig().get("playersToRender").getAsJsonObject();
-            Map<UUID, Integer> playersToRender = new HashMap();
+            Map<UUID, Integer> playersToRender = new HashMap<>();
 
             for (Map.Entry<String, JsonElement> stringJsonElementEntry : object.entrySet()) {
-                playersToRender.put(UUID.fromString(stringJsonElementEntry.getKey()), stringJsonElementEntry.getValue().getAsInt());
+                playersToRender.put(UUID.fromString((String) ((Map.Entry<?, ?>) stringJsonElementEntry).getKey()), ((JsonElement) ((Map.Entry<?, ?>) stringJsonElementEntry).getValue()).getAsInt());
             }
+            this.playersToRender = playersToRender;
+        } else {
+            this.playersToRender = new HashMap<>();
         }
     }
 
@@ -107,10 +119,12 @@ public class Emily extends LabyModAddon {
     public void savePlayersToRender() {
         JsonObject object = new JsonObject();
 
-        for (Object o : this.playersToRender.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            object.addProperty(((UUID) entry.getKey()).toString(), (Number) entry.getValue());
+        for (Map.Entry<UUID, Integer> uuidIntegerEntry : this.playersToRender.entrySet()) {
+            object.addProperty(((UUID) ((Map.Entry<?, ?>) uuidIntegerEntry).getKey()).toString(), (Number) ((Map.Entry<?, ?>) uuidIntegerEntry).getValue());
         }
+
+        LabyMod.getInstance().displayMessageInChat("Saved players to render");
+        LabyMod.getInstance().displayMessageInChat(Emily.getInstance().getPlayersToRender().toString());
 
         this.getConfig().add("playersToRender", object);
         this.saveConfig();
@@ -124,13 +138,13 @@ public class Emily extends LabyModAddon {
         this.key = key;
     }
 
-    public HashMap getPlayersToRender() {
+    public Map<UUID, Integer> getPlayersToRender() {
         return this.playersToRender;
     }
 
-        public void setPlayersToRender(HashMap playersToRender) {
-            this.playersToRender = playersToRender;
-        }
+    public void setPlayersToRender(Map<UUID, Integer> playersToRender) {
+        this.playersToRender = playersToRender;
+    }
 
     public boolean isRenderPlayers() {
         return this.renderPlayers;

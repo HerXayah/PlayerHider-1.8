@@ -1,6 +1,6 @@
 {
   "uuid": "%uuid%",
-  "name": "PlayerHider",
+  "name": "PlayerHider-1.12.2",
   "mainClass": "meow.emily.patootie.Emily",
   "description": "This addon allows you to hide players from your view.",
   "version": 1.3,

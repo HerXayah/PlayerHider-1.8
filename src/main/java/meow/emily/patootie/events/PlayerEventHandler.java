@@ -11,12 +11,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class PlayerEventHandler {
 
     @SubscribeEvent
-    public void onPrePlayerRender(RenderPlayerEvent.Pre e) throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
 
         if (Emily.getInstance().isRenderPlayers()) {
             EntityPlayer enPlayer = e.getEntityPlayer();
@@ -28,13 +26,23 @@ public class PlayerEventHandler {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
 
-                            Emily.getInstance().getVoiceChat().getPlayerVolumes().put(enPlayer.getUniqueID(), 0);
-                            Emily.getInstance().savePlayersToRender();
-                            LabyMod.getInstance().displayMessageInChat("UUID: " + enPlayer.getUniqueID().toString() + " Name: " + enPlayer.getGameProfile().getName());
+                            // Add Player from list to RenderPlayers as UUID
+                            try {
+                                int i;
+
+                                for (i = 0; i < Emily.getInstance().getPlayersToRender().size(); i++) {
+
+                                    Emily.getInstance().getVoiceChat().getPlayerVolumes().put(enPlayer.getUniqueID(), 0);
+                                    Emily.getInstance().savePlayersToRender();
+                                    LabyMod.getInstance().displayMessageInChat("UUID: " + enPlayer.getUniqueID().toString() + " Name: " + enPlayer.getGameProfile().getName());
+                                }
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                        }
                         }
                     }
                 }
-            }
         }
     }
 
