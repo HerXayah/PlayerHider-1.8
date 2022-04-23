@@ -1,4 +1,4 @@
-name: Build Addon & Create Release
+name: Build Addon & Create Release 1.12
 
 on:
   push:
