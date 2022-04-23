@@ -51,6 +51,10 @@ public class Emily extends LabyModAddon {
         api.getEventManager().register(
                 (user, entityPlayer, networkPlayerInfo, list) ->
                         list.add(createBlacklistEntry()));
+        api.getEventManager().register(
+                (user, entityPlayer, networkPlayerInfo, list) ->
+                        list.add(createBlacklistRemoval())
+        );
         checkAddonExist();
         System.out.println("Starting...");
     }
@@ -77,8 +81,39 @@ public class Emily extends LabyModAddon {
                         getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
-                            UpdateButton(networkPlayerInfo.getGameProfile().getName());
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
+                            savePlayersToRender();
+                            playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
+                            savePlayersToRenderString();
+                            saveConfig();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            labyMod().displayMessageInChat("Error: " + e.getMessage());
+                        }
+                        loadConfig();
+                    }
+
+                    @Override
+                    public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
+                        return true;
+                    }
+                }
+        );
+    }
+
+    private UserActionEntry createBlacklistRemoval() {
+        return new UserActionEntry(
+                "Remove from Blacklist",
+                UserActionEntry.EnumActionType.NONE,
+                null,
+                new UserActionEntry.ActionExecutor() {
+                    @Override
+                    public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
+                        getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
+                        labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
+                        try {
+                            RemovePlayer(networkPlayerInfo.getGameProfile().getName());
+                            playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 100);
                             savePlayersToRender();
                             saveConfig();
                         } catch (Exception e) {
@@ -87,6 +122,7 @@ public class Emily extends LabyModAddon {
                         }
                         loadConfig();
                     }
+
                     @Override
                     public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         return true;
@@ -153,21 +189,15 @@ public class Emily extends LabyModAddon {
         /*
         StringElement Blacklistbutton = new StringElement(
                 "Blacklist", new ControlElement.IconData(Material.COAL_BLOCK),
-                String.join(",", playersToRenderString), this::UpdateButton);
+                String.join(",", playersToRenderString), this::AddPlayer);
         subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
 
          */
         subSettings.add(keyElement);
     }
 
-    public void UpdateButton(String s) {
-        // Take String as array
-        String[] players = s.split(",");
-        // Convert String Array to List
-        List<String> playersList = Arrays.asList(players);
-        playersToRenderString.clear();
-        playersToRenderString.addAll(playersList);
-        savePlayersToRenderString();
+    public void RemovePlayer(String s) {
+        playersToRenderString.removeIf(player -> player.equals(s));
         saveConfig();
     }
 
