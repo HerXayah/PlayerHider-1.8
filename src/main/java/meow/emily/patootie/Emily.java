@@ -48,7 +48,6 @@ public class Emily extends LabyModAddon {
     public void onEnable() {
         instance = this;
         api.registerForgeListener(new PlayerEventHandler());
-       // api.registerForgeListener(new CommandHandler());
         api.getEventManager().register(
                 (user, entityPlayer, networkPlayerInfo, list) ->
                         list.add(createBlacklistEntry()));
@@ -87,11 +86,11 @@ public class Emily extends LabyModAddon {
                             playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
                             savePlayersToRenderString();
                             saveConfig();
-                            loadConfig();
                         } catch (Exception e) {
                             e.printStackTrace();
                             labyMod().displayMessageInChat("Error: " + e.getMessage());
                         }
+                        loadConfig();
                     }
 
                     @Override
@@ -117,11 +116,11 @@ public class Emily extends LabyModAddon {
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 100);
                             savePlayersToRender();
                             saveConfig();
-                            loadConfig();
                         } catch (Exception e) {
                             e.printStackTrace();
                             labyMod().displayMessageInChat("Error: " + e.getMessage());
                         }
+                        loadConfig();
                     }
 
                     @Override
@@ -139,7 +138,6 @@ public class Emily extends LabyModAddon {
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
         this.configMessage = config.has("configMessage") && config.get("configMessage").getAsBoolean();
         if (config.has("playersToRenderString")) {
-            playersToRenderString.clear();
             JsonElement playerArray = config.get("playersToRenderString");
             if (playerArray.isJsonArray()) {
                 JsonArray jsonArray = playerArray.getAsJsonArray();
@@ -152,7 +150,6 @@ public class Emily extends LabyModAddon {
             }
         }
         if (config.has("playersToRender")) {
-            playersToRender.clear();
             JsonObject object = config.get("playersToRender").getAsJsonObject();
             Map<UUID, Integer> playersToRender = new HashMap<>();
             for (Map.Entry<String, JsonElement> playerVolumeEntry : object.entrySet()) {
@@ -223,7 +220,9 @@ public class Emily extends LabyModAddon {
     public void savePlayersToRenderString() {
         JsonArray jsonArray = new JsonArray();
         for (String s : playersToRenderString) {
-            jsonArray.add(s);
+            if (!s.equals(" ")) {
+                jsonArray.add(s);
+            }
         }
         getConfig().add("playersToRenderString", jsonArray);
         saveConfig();
