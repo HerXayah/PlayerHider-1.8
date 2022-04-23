@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import meow.emily.patootie.events.PlayerEventHandler;
+import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
 import net.labymod.main.LabyMod;
@@ -28,6 +29,8 @@ public class Emily extends LabyModAddon {
 
 
     private boolean renderPlayers = true;
+    private boolean voiceexist = false;
+    private boolean muted = false;
 
     private boolean configMessage = true;
 
@@ -48,6 +51,19 @@ public class Emily extends LabyModAddon {
         api.getEventManager().register(
                 (user, entityPlayer, networkPlayerInfo, list) ->
                         list.add(createBlacklistEntry()));
+        checkAddonExist();
+        System.out.println("Starting...");
+    }
+
+    public void checkAddonExist() {
+        List<LabyModAddon> addons = AddonLoader.getAddons();
+        for (LabyModAddon addon : addons) {
+            if (addon == null || addon.about == null || addon.about.name == null) {
+                continue;
+            }
+            voiceexist = addon.about.name.equals("VoiceChat") && addon instanceof VoiceChat;
+            System.out.println("Success");
+        }
     }
 
     private UserActionEntry createBlacklistEntry() {
@@ -59,9 +75,8 @@ public class Emily extends LabyModAddon {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                        labyMod().displayMessageInChat("UUID: " + getConfig().get("playersToRenderString"));
+                        labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
-                            getConfig();
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
                             playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());
@@ -73,6 +88,7 @@ public class Emily extends LabyModAddon {
                         }
                         loadConfig();
                     }
+
                     @Override
                     public boolean canAppear(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
                         return true;
@@ -88,10 +104,15 @@ public class Emily extends LabyModAddon {
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
         this.configMessage = config.has("configMessage") && config.get("configMessage").getAsBoolean();
         if (config.has("playersToRenderString")) {
-            JsonArray jsonArray = config.get("playersToRenderString").getAsJsonArray();
-            for (JsonElement jsonElement : jsonArray) {
-                String name = jsonElement.getAsString();
-                playersToRenderString.add(name);
+            JsonElement playerArray = config.get("playersToRenderString");
+            if (playerArray.isJsonArray()) {
+                JsonArray jsonArray = playerArray.getAsJsonArray();
+                for (JsonElement jsonElement : jsonArray) {
+                    String name = jsonElement.getAsString();
+                    playersToRenderString.add(name);
+                }
+            } else {
+                playersToRenderString.add(" ");
             }
         }
         if (config.has("playersToRender")) {
@@ -128,14 +149,18 @@ public class Emily extends LabyModAddon {
             getConfig().addProperty("key", integer);
             saveConfig();
         });
-        StringElement playersToRender = new StringElement(
+
+        // If you know how to make both, THIS and the STRING Value to update simultaniously
+        // feel free to edit this in, so we can use This
+
+      /*  StringElement playersToRender = new StringElement(
                 "Blacklist", new ControlElement.IconData(Material.COAL_BLOCK),
                 String.join(",", playersToRenderString), s -> {
-            getConfig().addProperty("playersToRenderString", s);
+            playersToRenderString.add(s);
+            savePlayersToRenderString();
             saveConfig();
-        });
+        }); */
         subSettings.add(new HeaderElement(ModColor.cl('a') + "Seperate them by Comma"));
-        subSettings.add(playersToRender);
         subSettings.add(keyElement);
     }
 
@@ -156,12 +181,12 @@ public class Emily extends LabyModAddon {
     }
 
     public void savePlayersToRenderString() {
-        JsonObject object = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
         for (String s : playersToRenderString) {
-            object.addProperty(null, s);
+            jsonArray.add(s);
         }
 
-        getConfig().add("playersToRenderString", object);
+        getConfig().add("playersToRenderString", jsonArray);
         saveConfig();
     }
 
@@ -214,4 +239,19 @@ public class Emily extends LabyModAddon {
     }
 
 
+    public boolean isVoiceexist() {
+        return voiceexist;
+    }
+
+    public void setVoiceexist(boolean voiceexist) {
+        this.voiceexist = voiceexist;
+    }
+
+    public boolean isMuted() {
+        return muted;
+    }
+
+    public void setMuted(boolean muted) {
+        this.muted = muted;
+    }
 }

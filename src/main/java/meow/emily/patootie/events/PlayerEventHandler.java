@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerEventHandler {
 
@@ -27,23 +29,38 @@ public class PlayerEventHandler {
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            try {
-                                int i;
-
-                                for (i = 0; i < instance.getPlayersToRender().size(); i++) {
-
-                                    instance.getVoiceChat().getPlayerVolumes().put(enPlayer.getUniqueID(), 0);
-                                    instance.savePlayersToRender();
-                                    LabyMod.getInstance().displayMessageInChat("UUID: " + enPlayer.getUniqueID().toString() + " Name: " + enPlayer.getGameProfile().getName());
+                            if (instance.isVoiceexist()) {
+                                if (instance.isMuted()) {
+                                    mute(enPlayer);
+                                } else {
+                                    unmute(enPlayer);
                                 }
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
+
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    public void mute(EntityPlayer player) {
+        Emily instance = Emily.getInstance();
+        UUID uuid = player.getUniqueID();
+        instance.getVoiceChat().getPlayerVolumes().put(uuid, 0);
+        instance.savePlayersToRender();
+    }
+
+    public void unmute(EntityPlayer player) {
+        Emily instance = Emily.getInstance();
+        Map<UUID, Integer> playerVolumes = instance.getVoiceChat().getPlayerVolumes();
+        UUID uuid = player.getUniqueID();
+        if (playerVolumes.containsKey(uuid)) {
+            playerVolumes.put(uuid, instance.getVoiceChat().getVolume(uuid));
+        } else {
+            playerVolumes.put(uuid, 100);
+        }
+        instance.savePlayersToRender();
     }
 
     @SubscribeEvent
@@ -54,11 +71,13 @@ public class PlayerEventHandler {
                 LabyMod labymod = LabyMod.getInstance();
                 if (instance.isRenderPlayers()) {
                     instance.setRenderPlayers(false);
+                    instance.setMuted(false);
                     if (instance.isConfigMessage()) {
                         labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.GREEN + " on");
                     }
                 } else {
                     instance.setRenderPlayers(true);
+                    instance.setMuted(true);
                     if (instance.isConfigMessage()) {
                         labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.DARK_RED + " off");
                     }
