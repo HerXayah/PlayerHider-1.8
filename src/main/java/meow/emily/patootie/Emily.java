@@ -59,7 +59,9 @@ public class Emily extends LabyModAddon {
             if (addon == null || addon.about == null || addon.about.name == null) {
                 continue;
             }
-            voiceexist = addon.about.name.equals("VoiceChat") && addon instanceof VoiceChat;
+            if (addon.about.name.equals("VoiceChat")) {
+                voiceexist = true;
+            }
             System.out.println("Success");
         }
     }

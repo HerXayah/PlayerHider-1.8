@@ -12,8 +12,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class PlayerEventHandler {
 
@@ -29,14 +27,22 @@ public class PlayerEventHandler {
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            if (instance.isVoiceexist()) {
+                           /* if (instance.isVoiceexist()) {
                                 if (instance.isMuted()) {
-                                    mute(enPlayer);
+                                    try {
+                                        mute(enPlayer);
+                                        LabyMod.getInstance().displayMessageInChat("§c" + enPlayer.getGameProfile().getName() + " is muted");
+                                    } catch (Exception ex) {
+                                        LabyMod.getInstance().displayMessageInChat("§c" + ex);
+                                    }
                                 } else {
-                                    unmute(enPlayer);
-                                }
-
-                            }
+                                    try {
+                                        unmute(enPlayer);
+                                        LabyMod.getInstance().displayMessageInChat("§a" + enPlayer.getGameProfile().getName() + " is unmuted");
+                                    } catch (Exception ex) {
+                                        LabyMod.getInstance().displayMessageInChat("§c" + ex);
+                                    }
+                                }*/
                         }
                     }
                 }
@@ -44,11 +50,15 @@ public class PlayerEventHandler {
         }
     }
 
+    // Needs fixing. Crashes. idk why
+    /*
     public void mute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
         UUID uuid = player.getUniqueID();
         instance.getVoiceChat().getPlayerVolumes().put(uuid, 0);
+        instance.saveConfig();
         instance.savePlayersToRender();
+        instance.loadConfig();
     }
 
     public void unmute(EntityPlayer player) {
@@ -60,8 +70,10 @@ public class PlayerEventHandler {
         } else {
             playerVolumes.put(uuid, 100);
         }
+        instance.saveConfig();
         instance.savePlayersToRender();
-    }
+        instance.loadConfig();
+    } */
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
