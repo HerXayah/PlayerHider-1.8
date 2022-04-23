@@ -1,5 +1,6 @@
 package meow.emily.patootie;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import meow.emily.patootie.events.PlayerEventHandler;
 import net.labymod.addons.voicechat.VoiceChat;
@@ -13,7 +14,10 @@ import net.labymod.utils.ModColor;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class Emily extends LabyModAddon {
@@ -31,7 +35,8 @@ public class Emily extends LabyModAddon {
 
     private String playersToRenderString = "";
 
-    // public HashMap playersToRender = new HashMap();
+    public HashMap playersToRender = new HashMap();
+
     private int key;
 
     public static Emily getInstance() {
@@ -69,14 +74,14 @@ public class Emily extends LabyModAddon {
         this.playersToRenderString = config.has("playersToRenderString") ? config.get("playersToRenderString").getAsString() : "";
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
         this.ConfigMessage = config.has("ConfigMessage") && config.get("ConfigMessage").getAsBoolean();
-        /*if (this.getConfig().has("playersToRender")) {
+        if (this.getConfig().has("playersToRender")) {
             JsonObject object = this.getConfig().get("playersToRender").getAsJsonObject();
             Map<UUID, Integer> playersToRender = new HashMap();
 
             for (Map.Entry<String, JsonElement> stringJsonElementEntry : object.entrySet()) {
-                playersToRender.put(UUID.fromString((String) stringJsonElementEntry.getKey()), stringJsonElementEntry.getValue().getAsInt());
+                playersToRender.put(UUID.fromString(stringJsonElementEntry.getKey()), stringJsonElementEntry.getValue().getAsInt());
             }
-        } */
+        }
     }
 
     @Override
@@ -99,7 +104,7 @@ public class Emily extends LabyModAddon {
         subSettings.add(keyElement);
     }
 
-   /* public void savePlayersToRender() {
+    public void savePlayersToRender() {
         JsonObject object = new JsonObject();
 
         for (Object o : this.playersToRender.entrySet()) {
@@ -109,7 +114,7 @@ public class Emily extends LabyModAddon {
 
         this.getConfig().add("playersToRender", object);
         this.saveConfig();
-    } */
+    }
 
     public int getKey() {
         return this.key;
@@ -119,14 +124,14 @@ public class Emily extends LabyModAddon {
         this.key = key;
     }
 
-    /* public HashMap getPlayersToRender() {
-            return this.playersToRender;
-        }
+    public HashMap getPlayersToRender() {
+        return this.playersToRender;
+    }
 
         public void setPlayersToRender(HashMap playersToRender) {
             this.playersToRender = playersToRender;
         }
-    */
+
     public boolean isRenderPlayers() {
         return this.renderPlayers;
     }

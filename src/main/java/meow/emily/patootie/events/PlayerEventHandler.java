@@ -28,59 +28,9 @@ public class PlayerEventHandler {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
 
-                         /*    try {
-                                for (int i = 0; i < localPlayersToRender.length; i++) {
-                                    Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID());
-                                    JsonObject object = new JsonObject();
-
-                                    for (Map.Entry<UUID, Integer> ignored : Emily.getInstance().getVoiceChat().playerVolumes.entrySet()) {
-                                        object.addProperty(String.valueOf(Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID())), 0);
-                                    }
-
-                                    Emily.getInstance().getVoiceChat().getConfig().add("playerVolumes", object);
-                                    Emily.getInstance().getVoiceChat().saveConfig();
-                                }
-                            } catch (Exception ex) {
-                                throw new RuntimeException(ex);
-                            }
-
-                       try {
-                            Field classVoice = Emily.getInstance().getVoiceChat().getClass().getDeclaredField("playerVolumes");
-                            classVoice.setAccessible(true);
-                            Method voiceMethod = Emily.getInstance().getVoiceChat().getClass().getDeclaredMethod("getPlayerVolumes");
-                            voiceMethod.setAccessible(true);
-                            float[] playerVolumes = (float[]) voiceMethod.invoke(Emily.getInstance().getVoiceChat());
-                            playerVolumes[enPlayer.getEntityId()] = 0.0F;
-                            classVoice.set(Emily.getInstance().getVoiceChat(), playerVolumes);
-                            System.out.println(enPlayer.getGameProfile().getName() + " is muted");
-                        } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
-                            e1.printStackTrace();
-                        }
-
-                        /*
-
-                        // Get Players from list and
-
-                       for(int i = 0; i < Emily.getInstance().getPlayersToRender().size(); i++) {
-                            Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID());
-                            if(Emily.getInstance().getVoiceChat().getVolume(enPlayer.getUniqueID()) > 0) {
-
-                            }
-                        }
-                        try {
-                                // Just testing smth Emily.getInstance().getVoiceChat().getEnabledSetting().getCurrentValue();
-                                Emily.getInstance().getVoiceChat().getPlayerVolumes().put(UUID.fromString(enPlayer.getGameProfile().getName()), 0);
-                                LabyMod.getInstance().displayMessageInChat("Hidden");
-                        } catch (Exception ex) {
-                          //  System.out.println("Error: " + ex);
-                        }
-                        try {
-                            Emily.getInstance().getVoiceChat().getPlayerVolumes().get(UUID.fromString(enPlayer.getGameProfile().getName()));
-                        } catch (Exception ex) {
-                           // System.out.println("Error2: " + ex);
-                        }
-                        // Why did no one implement a god damn method to mute Players via the client??????
-                        // this shit here doesnt work afaik */
+                            Emily.getInstance().getVoiceChat().getPlayerVolumes().put(enPlayer.getUniqueID(), 0);
+                            Emily.getInstance().savePlayersToRender();
+                            LabyMod.getInstance().displayMessageInChat("UUID: " + enPlayer.getUniqueID().toString() + " Name: " + enPlayer.getGameProfile().getName());
                         }
                     }
                 }
