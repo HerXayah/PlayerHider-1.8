@@ -1,15 +1,16 @@
 # PlayerHider-1.8
 
-This addon allows you to talk in the LabyMod VoiceChat continuously!
+
+An Labymod Addon to hide players from view and VoiceChat.
+Doesnt work on Vanilla Version, due to the event not implemented. Use with Labymod + Forge.
 
 [![Build Addon](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml/badge.svg)](https://github.com/PrincessAkira/PlayerHider-1.8/actions/workflows/release.yml)
 
 ## Help needed
 
 ```
-- Mute Players in Voice when they are hidden
-It just crashes whenever i try to set it 
-in PlayerEventHandler.java
+- Unmute Players in the OnKey Event.
+- Hide Voicechat Icon
 ```
 
 ## Setup Workspace
