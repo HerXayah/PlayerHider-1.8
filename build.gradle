@@ -48,4 +48,3 @@ jar {
     exclude("**/launch")
     archiveName = "PlayerHider-1.8.jar"
 }
-
