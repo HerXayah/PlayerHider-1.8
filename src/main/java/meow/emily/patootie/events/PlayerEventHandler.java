@@ -24,6 +24,26 @@ public class PlayerEventHandler {
     // UUID VoiceChat 1.8
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
+   /*
+
+   Useful Debug Event btw
+
+   @SubscribeEvent
+   public void onTick(TickEvent.ClientTickEvent event) {
+        Emily instance = Emily.getInstance();
+         if (!instance.isVoiceexist()) {
+             LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
+             if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
+                 VoiceChat voiceChat = (VoiceChat) addon;
+                 LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
+                // instance.setVoiceexist(true);
+             } else {
+                 LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
+                // instance.setVoiceexist(false);
+             }
+         }
+    } */
+
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
         Emily instance = Emily.getInstance();
@@ -36,10 +56,10 @@ public class PlayerEventHandler {
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            // LabyMod.getInstance().displayMessageInChat("§a" + instance.isVoiceexist());
+                            //LabyMod.getInstance().displayMessageInChat("§a" + instance.isVoiceexist());
                             if (instance.isVoiceexist()) {
                                 if (instance.isMuted()) {
-                                    //    LabyMod.getInstance().displayMessageInChat("§a" + "here");
+                                    //LabyMod.getInstance().displayMessageInChat("§a" + "here");
                                     mute(enPlayer);
                                 } else {
                                     unmute(enPlayer);
@@ -52,8 +72,8 @@ public class PlayerEventHandler {
         }
     }
 
-// Needs fixing
-
+    // Call unmute when mod is also disabled on player.
+    // currently only works when player is invis, otherwise wont unmute.
     public void mute(EntityPlayer player) {
         Emily instance = Emily.getInstance();
         VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid8);
