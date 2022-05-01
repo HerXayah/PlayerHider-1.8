@@ -27,22 +27,21 @@ public class PlayerEventHandler {
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
 
-
-   @SubscribeEvent
-   public void onTick(TickEvent.ClientTickEvent event) {
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
         Emily instance = Emily.getInstance();
-         if (!instance.isVoiceexist()) {
-             LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
-             if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
-                 VoiceChat voiceChat = (VoiceChat) addon;
-                 //LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
-                 instance.setVoiceexist(true);
-             } else {
-                 //LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
-                 instance.setVoiceexist(false);
-             }
-         }
-   }
+        if (!instance.isVoiceexist()) {
+            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
+            if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
+                VoiceChat voiceChat = (VoiceChat) addon;
+                //LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
+                instance.setVoiceexist(true);
+            } else {
+                //LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
+                instance.setVoiceexist(false);
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
