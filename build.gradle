@@ -21,6 +21,13 @@ archivesBaseName = "PlayerHider"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
 compileJava.options.encoding = 'UTF-8'
 
 minecraft {
@@ -30,31 +37,9 @@ minecraft {
     makeObfSourceJar = false
 }
 
-processResources
-        {
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
-
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-jar {
-    manifest {
-        attributes(
-                'Manifest-Version': '1.0',
-                'Main-Class': 'meow.emily.patootie.Emily',
-                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-                'Created-By': "Gradle ${gradle.gradleVersion}",
-                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})"
-        )
+reobf {
+    jar {
+        useNotchSrg()
     }
 }
 
@@ -63,10 +48,3 @@ jar {
     exclude("**/launch")
     archiveName = "PlayerHider-1.8.jar"
 }
-
-reobf {
-    jar {
-        useNotchSrg()
-    }
-}
-
