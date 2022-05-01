@@ -16,8 +16,6 @@ import net.labymod.utils.Material;
 import net.labymod.utils.ModColor;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -65,7 +63,7 @@ public class Emily extends LabyModAddon {
         System.out.println("Starting...");
     }
 
-    @SubscribeEvent
+    /* @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (!voiceexist) {
             for (LabyModAddon addon : AddonLoader.getAddons()) {
@@ -75,15 +73,15 @@ public class Emily extends LabyModAddon {
                 LabyModAddon voicechat = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
                 if (voicechat instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
                     voiceChat = (VoiceChat) addon;
-                    LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
+                    System.out.println(PREFIX + "VoiceChat found!");
                     voiceexist = true;
                 } else {
-                    LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
+                    System.out.println(PREFIX + "VoiceChat not found!");
                     voiceexist = false;
                 }
             }
         }
-    }
+    } */
 
     private UserActionEntry createBlacklistEntry() {
         return new UserActionEntry(
@@ -96,6 +94,14 @@ public class Emily extends LabyModAddon {
                         // getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
                         //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
+                            RemovePlayer(networkPlayerInfo.getGameProfile().getName());
+                            UUID uuid = networkPlayerInfo.getGameProfile().getId();
+                            if (isVoiceexist()) {
+                                VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
+                                Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
+                                volume.put(uuid, 0);
+                                voiceChat.savePlayersVolumes();
+                            }
                             playersToRender.put(networkPlayerInfo.getGameProfile().getId(), 0);
                             savePlayersToRender();
                             playersToRenderString.add(networkPlayerInfo.getGameProfile().getName());

@@ -5,12 +5,14 @@ import meow.emily.patootie.Emily;
 import meow.emily.patootie.util.Utils;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
+import net.labymod.api.LabyModAddon;
 import net.labymod.main.LabyMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -24,9 +26,7 @@ public class PlayerEventHandler {
     // UUID VoiceChat 1.8
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
-   /*
 
-   Useful Debug Event btw
 
    @SubscribeEvent
    public void onTick(TickEvent.ClientTickEvent event) {
@@ -35,14 +35,14 @@ public class PlayerEventHandler {
              LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
              if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
                  VoiceChat voiceChat = (VoiceChat) addon;
-                 LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
-                // instance.setVoiceexist(true);
+                 //LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
+                 instance.setVoiceexist(true);
              } else {
-                 LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
-                // instance.setVoiceexist(false);
+                 //LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
+                 instance.setVoiceexist(false);
              }
          }
-    } */
+   }
 
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
