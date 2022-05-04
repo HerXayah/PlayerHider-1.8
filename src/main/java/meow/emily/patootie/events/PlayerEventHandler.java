@@ -34,10 +34,8 @@ public class PlayerEventHandler {
             LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
             if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
                 VoiceChat voiceChat = (VoiceChat) addon;
-                //LabyMod.getInstance().displayMessageInChat("VoiceChat addon found!");
                 instance.setVoiceexist(true);
             } else {
-                //LabyMod.getInstance().displayMessageInChat("VoiceChat addon not found!");
                 instance.setVoiceexist(false);
             }
         }
@@ -46,8 +44,8 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onPrePlayerRender(RenderPlayerEvent.Pre e) {
         Emily instance = Emily.getInstance();
-        if (instance.isRenderPlayers()) {
-            EntityPlayer enPlayer = e.entityPlayer;
+        EntityPlayer enPlayer = e.entityPlayer;
+        if (instance.isRenderPlayers() && instance.isModOn()) {
             if (instance.isRenderPlayers() && !enPlayer.equals(Minecraft.getMinecraft().thePlayer)) {
                 List<String> localPlayersToRender = instance.getPlayersToRenderString();
                 if (!Utils.isNPC(enPlayer)) {
@@ -55,20 +53,31 @@ public class PlayerEventHandler {
                     for (String s : localPlayersToRender) {
                         if (s.equals(enPlayer.getGameProfile().getName())) {
                             e.setCanceled(true);
-                            //LabyMod.getInstance().displayMessageInChat("§a" + instance.isVoiceexist());
                             if (instance.isVoiceexist()) {
                                 if (instance.isMuted()) {
-                                    //LabyMod.getInstance().displayMessageInChat("§a" + "here");
                                     mute(enPlayer);
-                                } else {
-                                    unmute(enPlayer);
                                 }
                             }
                         }
                     }
                 }
             }
-        }
+        } /* else {
+            if (instance.isPlayerUnmute() && instance.isVoiceexist() && !enPlayer.equals(Minecraft.getMinecraft().thePlayer && !instance.isModOn())) {
+                if (!instance.isRenderPlayers() && !Utils.isNPC(enPlayer)) {
+                    Map<UUID, Integer> volume = instance.getPlayersToRender();
+                    // for each uuid in the map
+                    for (UUID uuid : volume.keySet()) {
+                        // if the uuid is the same as the player
+                        if (uuid.equals(enPlayer.getUniqueID())) {
+                            // get the volume
+                            unmute(enPlayer);
+                        }
+                    }
+                    instance.setPlayerUnmute(!instance.isPlayerUnmute());
+                }
+            }
+        } */
     }
 
     // Call unmute when mod is also disabled on player.
@@ -95,22 +104,39 @@ public class PlayerEventHandler {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
+        EntityPlayer enPlayer = Minecraft.getMinecraft().thePlayer;
         Emily instance = Emily.getInstance();
+        LabyMod labymod = LabyMod.getInstance();
         if (instance.getKey() > -1) {
             if (Keyboard.isKeyDown(instance.getKey())) {
-                LabyMod labymod = LabyMod.getInstance();
-                if (instance.isRenderPlayers()) {
-                    instance.setRenderPlayers(false);
-                    instance.setMuted(false);
-                    if (instance.isConfigMessage()) {
-                        labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.GREEN + " on");
+                if (instance.isModOn()) {
+                    if (instance.isRenderPlayers()) {
+                        instance.setRenderPlayers(false);
+                        instance.setMuted(false);
+                        instance.saveConfig();
+                        if (instance.isVoiceexist()) {
+                            if (enPlayer != null) {
+                                unmute(enPlayer);
+                            }
+                        }
+                        if (instance.isConfigMessage()) {
+                            labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.GREEN + " on");
+                        }
+                    } else {
+                        instance.setRenderPlayers(true);
+                        instance.setMuted(true);
+                        instance.saveConfig();
+                        if (instance.isVoiceexist()) {
+                            if (enPlayer != null) {
+                                mute(enPlayer);
+                            }
+                        }
+                        if (instance.isConfigMessage()) {
+                            labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.DARK_RED + " off");
+                        }
                     }
                 } else {
-                    instance.setRenderPlayers(true);
-                    instance.setMuted(true);
-                    if (instance.isConfigMessage()) {
-                        labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.DARK_RED + " off");
-                    }
+                    labymod.displayMessageInChat(ChatFormatting.GRAY + ">>" + "[" + ChatFormatting.AQUA + "PH" + ChatFormatting.WHITE + "]" + ChatFormatting.BOLD + ChatFormatting.DARK_RED + " Please enable mod in config.");
                 }
             }
         }

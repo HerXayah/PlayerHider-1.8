@@ -29,10 +29,12 @@ public class Emily extends LabyModAddon {
     private VoiceChat voiceChat;
 
 
-    private boolean renderPlayers = true;
+    private boolean renderPlayers;
+    private boolean modOn;
     // UUID VoiceCHat 1.12
     private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
     private boolean muted = false;
+    private boolean playerUnmute = false;
 
     private boolean configMessage = true;
     // UUID VoiceChat 1.8
@@ -129,8 +131,6 @@ public class Emily extends LabyModAddon {
                 new UserActionEntry.ActionExecutor() {
                     @Override
                     public void execute(User user, EntityPlayer entityPlayer, NetworkPlayerInfo networkPlayerInfo) {
-                        //  getConfig().addProperty("playersToRenderString", networkPlayerInfo.getGameProfile().getName());
-                        //labyMod().displayMessageInChat("Name: " + getConfig().get("playersToRenderString"));
                         try {
                             RemovePlayer(networkPlayerInfo.getGameProfile().getName());
                             UUID uuid = networkPlayerInfo.getGameProfile().getId();
@@ -165,6 +165,8 @@ public class Emily extends LabyModAddon {
     public void loadConfig() {
         JsonObject config = getConfig();
         this.renderPlayers = config.has("renderPlayers") && config.get("renderPlayers").getAsBoolean();
+        this.modOn = config.has("enabled") && config.get("enabled").getAsBoolean();
+        this.playerUnmute = config.has("playerUnmute") && config.get("playerUnmute").getAsBoolean();
         this.key = config.has("key") ? config.get("key").getAsInt() : -1;
         this.configMessage = config.has("configMessage") && config.get("configMessage").getAsBoolean();
         if (config.has("playersToRenderString")) {
@@ -199,12 +201,17 @@ public class Emily extends LabyModAddon {
         subSettings.add(new BooleanElement(
                 "Enable PlayerHider",
                 this, new ControlElement.IconData(Material.REDSTONE),
-                "renderPlayers", renderPlayers)
+                "enabled", isModOn())
         );
         subSettings.add(new BooleanElement(
                 "Enable Messages",
                 this, new ControlElement.IconData(Material.WOOL),
                 "configMessage", configMessage)
+        );
+        subSettings.add(new BooleanElement(
+                "Unmute Players on Unhide",
+                this, new ControlElement.IconData(Material.BURNING_FURNACE),
+                "playerUnmute", playerUnmute)
         );
         KeyElement keyElement = new KeyElement(
                 "Key",
@@ -327,5 +334,21 @@ public class Emily extends LabyModAddon {
 
     public void setMuted(boolean muted) {
         this.muted = muted;
+    }
+
+    public boolean isPlayerUnmute() {
+        return playerUnmute;
+    }
+
+    public void setPlayerUnmute(boolean playerUnmute) {
+        this.playerUnmute = playerUnmute;
+    }
+
+    public boolean isModOn() {
+        return modOn;
+    }
+
+    public void setModOn(boolean modOn) {
+        this.modOn = modOn;
     }
 }
