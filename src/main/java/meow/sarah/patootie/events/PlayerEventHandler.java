@@ -1,11 +1,10 @@
-package meow.emily.patootie.events;
+package meow.sarah.patootie.events;
 
-import meow.emily.patootie.Emily;
-import meow.emily.patootie.util.Utils;
+import meow.sarah.patootie.Sarah;
+import meow.sarah.patootie.util.Utils;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
-import net.labymod.main.LabyMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -18,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static meow.sarah.patootie.util.Utils.SetConfig;
+import static meow.sarah.patootie.util.Utils.sendMessage;
+
 public class PlayerEventHandler {
 
     // UUID VoiceCHat 1.12
@@ -26,20 +28,14 @@ public class PlayerEventHandler {
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
 
     // im gonna kms ngl
-    Emily instance = Emily.getInstance();
-    LabyMod labymod = LabyMod.getInstance();
+    Sarah instance = Sarah.getInstance();
     Minecraft minecraft = Minecraft.getMinecraft();
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (!instance.isVoiceexist()) {
-            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
-            if (addon instanceof VoiceChat && addon.about.name.equals("VoiceChat")) {
-                VoiceChat voiceChat = (VoiceChat) addon;
-                instance.setVoiceexist(true);
-            } else {
-                instance.setVoiceexist(false);
-            }
+            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
+            instance.setVoiceexist(addon instanceof VoiceChat && addon.about.name.equals("VoiceChat"));
         }
     }
 
@@ -62,7 +58,7 @@ public class PlayerEventHandler {
     }
 
     public void mute(EntityPlayer player) {
-        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid8);
+        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
         if (!player.equals(minecraft.thePlayer)) {
             voiceChat.getPlayerVolumes().put(player.getUniqueID(), 0);
             voiceChat.savePlayersVolumes();
@@ -78,7 +74,7 @@ public class PlayerEventHandler {
     }
 
     public void unmute(EntityPlayer player) {
-        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid8);
+        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
         UUID uuid = player.getUniqueID();
         Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
         if (!player.equals(minecraft.thePlayer)) {
@@ -87,20 +83,6 @@ public class PlayerEventHandler {
         voiceChat.savePlayersVolumes();
     }
 
-    public void SetConfig(Boolean answer) {
-        instance.setRenderPlayers(answer);
-        instance.setMuted(answer);
-        instance.saveConfig();
-    }
-
-    public void sendMessage(String message) {
-        try {
-            labymod.displayMessageInChat(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-            labymod.displayMessageInChat(e.getMessage());
-        }
-    }
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
