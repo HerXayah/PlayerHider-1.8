@@ -34,7 +34,7 @@ public class PlayerEventHandler {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (!instance.isVoiceexist()) {
-            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid12)));
+            LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
             instance.setVoiceexist(addon instanceof VoiceChat && addon.about.name.equals("VoiceChat"));
         }
     }
@@ -58,7 +58,7 @@ public class PlayerEventHandler {
     }
 
     public void mute(EntityPlayer player) {
-        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
+        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid8);
         if (!player.equals(minecraft.thePlayer)) {
             voiceChat.getPlayerVolumes().put(player.getUniqueID(), 0);
             voiceChat.savePlayersVolumes();
@@ -74,7 +74,7 @@ public class PlayerEventHandler {
     }
 
     public void unmute(EntityPlayer player) {
-        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid12);
+        VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid8);
         UUID uuid = player.getUniqueID();
         Map<UUID, Integer> volume = voiceChat.getPlayerVolumes();
         if (!player.equals(minecraft.thePlayer)) {
