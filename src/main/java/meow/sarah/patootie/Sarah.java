@@ -22,21 +22,16 @@ import java.util.*;
 public class Sarah extends LabyModAddon {
 
     private static Sarah instance;
-    private VoiceChat voiceChat;
-
-    private boolean renderPlayers;
-    private boolean modOn;
-
     private final UUID vcUuid12 = UUID.fromString("24c0644d-ad56-4609-876d-6e9da3cc9794");
     private final UUID vcUuid8 = UUID.fromString("43152d5b-ca80-4b29-8f48-39fd63e48dee");
-
+    public Map<UUID, Integer> playersToRender = new HashMap<>();
+    private VoiceChat voiceChat;
+    private boolean renderPlayers;
+    private boolean modOn;
     private boolean muted = false;
     private boolean playerUnmute = false;
-
     private boolean configMessage = true;
     private LabyModAddon addon;
-    public Map<UUID, Integer> playersToRender = new HashMap<>();
-
     private List<String> playersToRenderString = new ArrayList<>();
     private boolean voiceexist;
 

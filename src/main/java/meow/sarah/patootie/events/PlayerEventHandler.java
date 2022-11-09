@@ -5,6 +5,7 @@ import meow.sarah.patootie.util.Utils;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
+import net.labymod.main.LabyMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -29,6 +30,7 @@ public class PlayerEventHandler {
 
     // im gonna kms ngl
     Sarah instance = Sarah.getInstance();
+    LabyMod labymod = LabyMod.getInstance();
     Minecraft minecraft = Minecraft.getMinecraft();
     LabyModAddon addon = AddonLoader.getAddonByUUID(UUID.fromString(String.valueOf(vcUuid8)));
     VoiceChat voiceChat = (VoiceChat) AddonLoader.getAddonByUUID(this.vcUuid8);
@@ -81,7 +83,6 @@ public class PlayerEventHandler {
         }
         voiceChat.savePlayersVolumes();
     }
-
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent e) {
