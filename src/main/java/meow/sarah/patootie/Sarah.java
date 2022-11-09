@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import meow.sarah.patootie.events.PlayerEventHandler;
+import meow.sarah.patootie.util.Utils;
 import net.labymod.addon.AddonLoader;
 import net.labymod.addons.voicechat.VoiceChat;
 import net.labymod.api.LabyModAddon;
@@ -73,7 +74,7 @@ public class Sarah extends LabyModAddon {
                             saveConfig();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            labyMod().displayMessageInChat("Error: " + e.getMessage());
+                            Utils.sendMessage("Error: " + e.getMessage());
                         }
                     }
 
@@ -111,7 +112,7 @@ public class Sarah extends LabyModAddon {
                             saveConfig();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            labyMod().displayMessageInChat("Error: " + e.getMessage());
+                            Utils.sendMessage("Error: " + e.getMessage());
                         }
                     }
 
